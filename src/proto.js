@@ -22,8 +22,8 @@ message {
     optional string query = 2;
   }
 
-  optional repeated Query = 1;
-  optional Status code    = 2;
-  optional bytes  payload = 3;
+  optional repeated Query     = 1;
+  optional Status   code      = 2;
+  optional bytes    response  = 3;
 }
 `)

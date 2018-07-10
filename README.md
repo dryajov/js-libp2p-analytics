@@ -1,4 +1,4 @@
-# js-libp2p-circuit
+# js-libp2p-analytics
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
@@ -9,32 +9,14 @@
 ![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
 
-![](https://raw.githubusercontent.com/libp2p/interface-connection/master/img/badge.png)
-![](https://raw.githubusercontent.com/libp2p/interface-transport/master/img/badge.png)
-
-> Node.js implementation of the Circuit module that libp2p uses, which implements the [interface-connection](https://github.com/libp2p/interface-connection) interface for dial/listen.
-
-`libp2p-circuit` implements the circuit-relay mechanism that allows nodes that don't speak the same protocol to communicate using a third _relay_ node.
+> Expose stats and perform analytics on a node.
+WARNING: This module is not safe to use in production due to possible privacy implications.
 
 **Note:** This module uses [pull-streams](https://pull-stream.github.io) for all stream based interfaces.
 
 ### Why?
 
-`circuit-relaying` uses additional nodes in order to transfer traffic between two otherwise unreachable nodes. This allows nodes that don't speak the same protocols or are running in limited environments, e.g. browsers and IoT devices, to communicate, which would otherwise be impossible given the fact that for example browsers don't have any socket support and as such cannot be directly dialed.
-
-The use of circuit-relaying is not limited to routing traffic between browser nodes, other uses include:
- - routing traffic between private nets and circumventing NAT layers
- - route mangling for better privacy (matreshka/shallot dialing).
-
- It's also possible to use it for clients that implement exotic transports such as  devices that only have bluetooth radios to be reachable over bluetooth enabled relays and become full p2p nodes.
-
-### libp2p-circuit and IPFS
-
-Prior to `libp2p-circuit` there was a rift in the IPFS network, were IPFS nodes could only access content from nodes that speak the same protocol, for example TCP only nodes could only dial to other TCP only nodes, same for any other protocol combination. In practice, this limitation was most visible in JS-IPFS browser nodes, since they can only dial out but not be dialed in over WebRTC or WebSockets, hence any content that the browser node held was not reachable by the rest of the network even through it was announced on the DHT. Non browser IPFS nodes would usually speak more than one protocol such as TCP, WebSockets and/or WebRTC, this made the problem less severe outside of the browser. `libp2p-circuit` solves this problem completely, as long as there are `relay nodes` capable of routing traffic between those nodes their content should be available to the rest of the IPFS network.
-
-## Lead Maintainer
-
-[Jacob Heun](https://github.com/jacobheun)
+`libp2p` collects stats about existing connections, but those are not exposed and its not possible query those stats from the outside. This module allows doing just that by exposing them as a pojo.
 
 ## Table of Contents
 
@@ -53,62 +35,13 @@ Prior to `libp2p-circuit` there was a rift in the IPFS network, were IPFS nodes 
 ### npm
 
 ```sh
-> npm i libp2p-circuit
+> npm i libp2p-analytics
 ```
 
 ## Usage
 
 ### Example
 
-#### Create dialer/listener
-
-```js
-const Circuit = require('libp2p-circuit')
-const multiaddr = require('multiaddr')
-const pull = require('pull-stream')
-
-const mh1 = multiaddr('/p2p-circuit/ipfs/QmHash') // dial /ipfs/QmHash over any circuit
-
-const circuit = new Circuit(swarmInstance, options) // pass swarm instance and options
-
-const listener = circuit.createListener(mh1, (connection) => {
-  console.log('new connection opened')
-  pull(
-    pull.values(['hello']),
-    socket
-  )
-})
-
-listener.listen(() => {
-  console.log('listening')
-
-  pull(
-    circuit.dial(mh1),
-    pull.log,
-    pull.onEnd(() => {
-      circuit.close()
-    })
-  )
-})
-```
-
-Outputs:
-
-```sh
-listening
-new connection opened
-hello
-```
-
-#### Create `relay`
-
-```js
-const Relay = require('libp2p-circuit').Relay
-
-const relay = new Relay(options)
-
-relay.mount(swarmInstance) // start relaying traffic
-```
 
 ### This module uses `pull-streams`
 
