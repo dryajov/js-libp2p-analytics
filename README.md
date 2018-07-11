@@ -16,7 +16,7 @@ WARNING: This module is not safe to use in production due to possible privacy im
 
 ### Why?
 
-`libp2p` collects stats about existing connections, but those are not exposed and its not possible query those stats from the outside. This module allows doing just that by exposing them as a pojo.
+`libp2p` collects stats about existing connections, but those are not exposed and its not possible query those stats from the outside. This module allows doing just that by exposing them to other nodes to query. Note that right now there is no authentication and any node would be able to query stats from any other node.
 
 ## Table of Contents
 
@@ -67,61 +67,16 @@ const nodeStreamInstance = pullToStream(pullStreamInstance)
 
 To learn more about this utility, visit https://pull-stream.github.io/#pull-stream-to-stream.
 
-## API
-
-[![](https://raw.githubusercontent.com/libp2p/interface-transport/master/img/badge.png)](https://github.com/libp2p/interface-transport)
-
-`libp2p-circuit` accepts Circuit addresses for both IPFS and non IPFS encapsulated addresses, i.e:
-
-`/p2p-circuit/ip4/127.0.0.1/tcp/4001/ipfs/QmHash`
-
-Both for dialing and listening.
-
-### Implementation rational
-
-This module is not a transport, however it implements `interface-transport` interface in order to allow circuit to be plugged with `libp2p-swarm`. The rational behind it is that, `libp2p-circuit` has a dial and listen flow, which fits nicely with other transports, moreover, it requires the _raw_ connection to be encrypted and muxed just as a regular transport's connection does. All in all, `interface-transport` ended up being the correct level of abstraction for circuit, as well as allowed us to reuse existing integration points in `libp2p-swarm` and `libp2p` without adding any ad-hoc logic. All parts of `interface-transport` are used, including `.getAddr` which returns a list of `/p2p-circuit` addresses that circuit is currently listening.
-
-```
-libp2p                                                                                  libp2p-circuit (transport)                     
-+-------------------------------------------------+                                     +--------------------------+                      
-|        +---------------------------------+      |                                     |                          |                      
-|        |                                 |      |                                     |   +------------------+   |                      
-|        |                                 |      |  circuit-relay listens for the HOP  |   |                  |   |                      
-|        |           libp2p-swarm          <------------------------------------------------|  circuit-relay   |   |                      
-|        |                                 |      |  message to handle incomming relay  |   |                  |   |                      
-|        |                                 |      |  requests from other nodes          |   +------------------+   |                      
-|        +---------------------------------+      |                                     |                          |                      
-|         ^     ^   ^  ^   ^           ^          |                                     |   +------------------+   |                      
-|         |     |   |  |   |           |          |                                     |   | +-------------+  |   |                      
-|         |     |   |  |   |           |          |  dialer uses libp2p-swarm to dial   |   | |             |  |   |                      
-|         |     |   |  +---------------------------------------------------------------------->   dialer    |  |   |                      
-|         |     | transports           |          |  to a circuit-relay node using the  |   | |             |  |   |                      
-|         |     |   |      |           |          |  HOP message                        |   | +-------------+  |   |                      
-|         |     |   |      |           |          |                                     |   |                  |   |                      
-|         v     v   |      v           v          |                                     |   |                  |   |                      
-|+------------------|----------------------------+|                                     |   |  +-------------+ |   |                      
-||           |      |    |      |                ||                                     |   |  |             | |   |                      
-||libp2p-tcp |libp2p-ws  | .... |libp2p-circuit  ||  listener handles STOP messages from|   |  | listener    | |   |                      
-||           |      +-------------------------------------------------------------------------->             | |   |                      
-||           |           |      |plugs in just   ||  circuit-relay nodes                |   |  +-------------+ |   |                      
-||           |           |      |as any other    ||                                     |   |                  |   |                      
-||           |           |      |transport       ||                                     |   +------------------+   |                      
-|+-----------------------------------------------+|                                     |                          |                      
-+-------------------------------------------------+                                     +--------------------------+ 
-```
-
 ## Contribute
 
 Contributions are welcome! The libp2p implementation in JavaScript is a work in progress. As such, there's a few things you can do right now to help out:
 
-- [Check out the existing issues](//github.com/libp2p/js-libp2p-circuit/issues).
+- [Check out the existing issues](//github.com/dryajov/js-libp2p-analytcs/issues).
 - **Perform code reviews**.
 - **Add tests**. There can never be enough tests.
-
-Please be aware that all interactions related to libp2p are subject to the IPFS [Code of Conduct](https://github.com/ipfs/community/blob/master/code-of-conduct.md).
 
 Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
 ## License
 
-[MIT](LICENSE) © 2017 Protocol Labs
+[MIT](LICENSE) © 2018 dryajov
