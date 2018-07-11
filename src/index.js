@@ -14,14 +14,14 @@ function statsToJson (statsObj) {
     },
     movingAverages: {
       dataReceived: {
-        '60000': statsObj.movingAverages.dataReceived['60000'].movingAverage(),
-        '300000': statsObj.movingAverages.dataReceived['300000'].movingAverage(),
-        '900000': statsObj.movingAverages.dataReceived['900000'].movingAverage()
+        60000: statsObj.movingAverages.dataReceived['60000'].movingAverage(),
+        300000: statsObj.movingAverages.dataReceived['300000'].movingAverage(),
+        900000: statsObj.movingAverages.dataReceived['900000'].movingAverage()
       },
       dataSent: {
-        '60000': statsObj.movingAverages.dataSent['60000'].movingAverage(),
-        '300000': statsObj.movingAverages.dataSent['300000'].movingAverage(),
-        '900000': statsObj.movingAverages.dataSent['900000'].movingAverage()
+        60000: statsObj.movingAverages.dataSent['60000'].movingAverage(),
+        300000: statsObj.movingAverages.dataSent['300000'].movingAverage(),
+        900000: statsObj.movingAverages.dataSent['900000'].movingAverage()
       }
     }
   }

@@ -1,5 +1,3 @@
-'use strict'
-
 /* eslint-env mocha */
 'use strict'
 
@@ -9,9 +7,7 @@ const expect = chai.expect
 chai.use(dirtyChai)
 
 const Connection = require('interface-connection').Connection
-const pull = require('pull-stream')
 const pair = require('pull-pair/duplex')
-const parallel = require('async/parallel')
 
 const Analytics = require('../src/index')
 
