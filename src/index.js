@@ -81,8 +81,8 @@ class Analytics {
     this.stats = libp2p.stats
   }
 
-  start () {
-    this.libp2p.handleProto(multicodec, (_, conn) => {
+  start (callback) {
+    this.libp2p.handle(multicodec, (_, conn) => {
       pull(
         conn,
         pb.decode(proto),
@@ -113,6 +113,8 @@ class Analytics {
         conn
       )
     })
+
+    callback()
   }
 
   getPeers (peers, callback) {
@@ -147,8 +149,9 @@ class Analytics {
     })
   }
 
-  stop () {
+  stop (cb) {
     this.libp2p.unhandle(multicodec)
+    cb()
   }
 }
 
